@@ -1,48 +1,49 @@
-#include <raylib.h>
-
+#include "include/rl/raylib.h"
 #include "include/def.hpp"
-#include "include/notes.hpp"
 
 void KeySelLogic(data_t *d)
 {
 	int key = GetKeyPressed();
 
+	if (d->insert_mode)
+		return;
+
 	switch (key) 
 	{
-		case KEY_F1:
+		case KEY_ONE:
 			d->note = C;
 			break;
-		case KEY_F2:
+		case KEY_TWO:
 			d->note = CS;
 			break;
-		case KEY_F3:
+		case KEY_THREE:
 			d->note = D;
 			break;
-		case KEY_F4:
+		case KEY_Q:
 			d->note = DS;
 			break;
-		case KEY_F5:
+		case KEY_W:
 			d->note = E;
 			break;
-		case KEY_F6:
+		case KEY_E:
 			d->note = F;
 			break;
-		case KEY_F7:
+		case KEY_A:
 			d->note = FS;
 			break;
-		case KEY_F8:
+		case KEY_S:
 			d->note = G;
 			break;
-		case KEY_F9:
+		case KEY_D:
 			d->note = GS;
 			break;
-		case KEY_F10:
+		case KEY_Z:
 			d->note = A;
 			break;
-		case KEY_F11:
+		case KEY_X:
 			d->note = AS;
 			break;
-		case KEY_F12:
+		case KEY_C:
 			d->note = B;
 			break;
 		default:
@@ -57,6 +58,8 @@ void KeySelLogic(data_t *d)
 
 void InpUpdate(data_t *d)
 {
+	CurrKeyStr(d);
+
 	KeySelLogic(d);
 
 	if (IsKeyPressed(KEY_ESCAPE))
@@ -109,11 +112,16 @@ void Draw(data_t *d)
 	DrawTextEx(d->font, d->inp_buf, Vector2 {80, 80}, 50, 1, RAYWHITE);
 
 	// Controls
+	DrawTextEx(d->font, "Tab: Maj/Min", Vector2 {1350, 900}, 50, 1, RAYWHITE);
 	DrawTextEx(d->font, "Note Selection:", Vector2 {1350, 950}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, " F1: C    F2: C#   F3: D", Vector2 {1350, 1000}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, " F4: D#   F5: E    F6: F", Vector2 {1350, 1050}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, " F7: F#   F8: G    F9: G#", Vector2 {1350, 1100}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, "F10: A   F11: A#  F12: B", Vector2 {1350, 1150}, 50, 1, RAYWHITE);
+	DrawTextEx(d->font, "1: C    2: C#   3: D", Vector2 {1350, 1000}, 50, 1, RAYWHITE);
+	DrawTextEx(d->font, "q: D#   w: E    e: F", Vector2 {1350, 1050}, 50, 1, RAYWHITE);
+	DrawTextEx(d->font, "a: F#   s: G    d: G#", Vector2 {1350, 1100}, 50, 1, RAYWHITE);
+	DrawTextEx(d->font, "z: A    x: A#   c: B", Vector2 {1350, 1150}, 50, 1, RAYWHITE);
+
+	// Current Key
+	DrawTextEx(d->font, "Current Key:", Vector2 {60, 180}, 50, 1, RAYWHITE);
+	DrawTextEx(d->font, d->key_str, Vector2 {60, 220}, 70, 1, RAYWHITE);
 
 	if (d->start_program)
 		DrawTextEx(d->font, "--Running--", Vector2 {60, 1180}, 50, 1, RAYWHITE); 
