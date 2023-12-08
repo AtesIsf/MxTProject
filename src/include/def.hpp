@@ -20,7 +20,6 @@
 
 typedef struct Data
 {
-	unsigned short bpm = 60;
 	// 1 -> int, 0 -> randim
 	bool is_interval = false;
 	// acts as a lock
@@ -31,7 +30,8 @@ typedef struct Data
 	// index for inp_buf
 	unsigned int i = 0;
 	// all letters + space & full stop
-	float char_freq[28];
+	// Indexes -> a to z, last 2 are space and full stop
+	float *char_freq;
 	
 	float note = C;
 	bool is_maj = 1;
@@ -46,6 +46,10 @@ int * ScaleFormula(bool is_maj);
 float * GetScale(float start, bool is_maj);
 
 void CurrKeyStr(data_t *d);
+
+void NoteCharMatchup(data_t *d);
+
+int CharIndex(data_t *d, char c);
 
 #endif
 
