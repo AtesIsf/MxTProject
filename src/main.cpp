@@ -9,9 +9,6 @@
 // Cycles per second (hz)
 float frequency = 0.0f;
 
-// Audio frequency, for smoothing
-float audioFrequency = 0.0f;
-
 // Previous value, used to test if sine needs to be rewritten, and to smoothly modulate frequency
 float oldFrequency = 1.0f;
 
@@ -24,10 +21,7 @@ int waveLength = 1;
 
 void AudioInputCallback(void *buffer, unsigned int frames)
 {
-    audioFrequency = frequency + (audioFrequency - frequency)*0.95f;
-    audioFrequency += 1.0f;
-    audioFrequency -= 1.0f;
-    float incr = audioFrequency/44100.0f;
+    float incr = frequency/44100.0f;
     short *d = (short *) buffer;
 
     for (unsigned int i = 0; i < frames; i++)
@@ -151,7 +145,7 @@ void RunUpdate(data_t *d)
 	}
 
 	frame_counter++;
-	if (frame_counter == 60)
+	if (frame_counter == 30)
 	{
 		n_ticks++;
 		frame_counter = 0;
