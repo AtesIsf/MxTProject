@@ -147,18 +147,17 @@ void RunUpdate(data_t *d)
 			data[j] = (short)0;
 		}
 
-		// Scale read cursor's position to minimize transition artifacts
-		//readCursor = (int)(readCursor * ((float)waveLength / (float)oldWavelength));
 		oldFrequency = frequency;
 	}
 
 	frame_counter++;
-	if (frame_counter == 30)
+	if (frame_counter == 60)
 	{
 		n_ticks++;
 		frame_counter = 0;
 		if (d->inp_buf[n_ticks] == '\0')
 		{
+			puts("");
 			n_ticks = 0;
 			d->start_program = false;
 			d->insert_mode = false;
