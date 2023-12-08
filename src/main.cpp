@@ -1,16 +1,16 @@
-#include <cstdlib>
+#include <stdio.h>
 #include <math.h>
-#include "include/rl/raylib.h"
+#include <raylib.h>
 #include "include/def.hpp"
 
-#define MAX_SAMPLES               512
-#define MAX_SAMPLES_PER_UPDATE   4096
+#define MAX_SAMPLES 512
+#define MAX_SAMPLES_PER_UPDATE 4096
 
 // Cycles per second (hz)
 float frequency = 0.0f;
 
 // Audio frequency, for smoothing
-float audioFrequency = 440.0f;
+float audioFrequency = 0.0f;
 
 // Previous value, used to test if sine needs to be rewritten, and to smoothly modulate frequency
 float oldFrequency = 1.0f;
@@ -126,9 +126,10 @@ void RunUpdate(data_t *d)
 	static int frame_counter = 0;
 	static int n_ticks = 0;
 	
-	frequency = d->char_freq[CharIndex(d, d->inp_buf[frame_counter%28])];
+	frequency = d->char_freq[CharIndex(d, d->inp_buf[n_ticks])];
 	if (frequency != oldFrequency)
 	{
+		printf("%.2f\n", frequency);
 		// Compute wavelength. Limit size in both directions.
 		//int oldWavelength = waveLength;
 		waveLength = (int)(22050/frequency);
@@ -156,10 +157,12 @@ void RunUpdate(data_t *d)
 	{
 		n_ticks++;
 		frame_counter = 0;
-		if (d->char_freq[CharIndex(d, d->inp_buf[frame_counter%28])] == '\0')
+		if (d->inp_buf[n_ticks] == '\0')
 		{
 			n_ticks = 0;
-			d->start_program = 0;
+			d->start_program = false;
+			d->insert_mode = false;
+			frequency = 0.0f;
 		}
 	}
 }
@@ -171,7 +174,10 @@ void Update(data_t *d)
 	else InpUpdate(d);
 
 	if(IsKeyPressed(KEY_ENTER))
+	{
 		d->start_program = true;
+		NoteCharMatchup(d);
+	}
 }
 
 void Draw(data_t *d)
@@ -180,28 +186,28 @@ void Draw(data_t *d)
 	ClearBackground(BLACK);
 
 	// Border
-	DrawRectangleLines(40, 40, 1880, 1200, RAYWHITE);	
+	DrawRectangleLines(20, 20, 940, 600, RAYWHITE);	
 
 	// Textbox
-	DrawRectangleLines(60, 60, 1840, 100, RAYWHITE);
-	DrawTextEx(d->font, d->inp_buf, Vector2 {80, 80}, 50, 1, RAYWHITE);
+	DrawRectangleLines(30, 30, 920, 50, RAYWHITE);
+	DrawTextEx(d->font, d->inp_buf, Vector2 {40, 40}, 30, 1, RAYWHITE);
 
 	// Controls
-	DrawTextEx(d->font, "Tab: Maj/Min", Vector2 {1350, 900}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, "Note Selection:", Vector2 {1350, 950}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, "1: C    2: C#   3: D", Vector2 {1350, 1000}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, "q: D#   w: E    e: F", Vector2 {1350, 1050}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, "a: F#   s: G    d: G#", Vector2 {1350, 1100}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, "z: A    x: A#   c: B", Vector2 {1350, 1150}, 50, 1, RAYWHITE);
+	DrawTextEx(d->font, "Tab: Maj/Min", Vector2 {675, 450}, 30, 1, RAYWHITE);
+	DrawTextEx(d->font, "Note Selection:", Vector2 {675, 475}, 30, 1, RAYWHITE);
+	DrawTextEx(d->font, "1: C    2: C#   3: D", Vector2 {675, 500}, 30, 1, RAYWHITE);
+	DrawTextEx(d->font, "q: D#   w: E    e: F", Vector2 {675, 525}, 30, 1, RAYWHITE);
+	DrawTextEx(d->font, "a: F#   s: G    d: G#", Vector2 {675, 550}, 30, 1, RAYWHITE);
+	DrawTextEx(d->font, "z: A    x: A#   c: B", Vector2 {675, 575}, 30, 1, RAYWHITE);
 
 	// Current Key
-	DrawTextEx(d->font, "Current Key:", Vector2 {60, 180}, 50, 1, RAYWHITE);
-	DrawTextEx(d->font, d->key_str, Vector2 {60, 220}, 70, 1, RAYWHITE);
+	DrawTextEx(d->font, "Current Key:", Vector2 {30, 90}, 30, 1, RAYWHITE);
+	DrawTextEx(d->font, d->key_str, Vector2 {30, 110}, 40, 1, RAYWHITE);
 
 	if (d->start_program)
-		DrawTextEx(d->font, "--Running--", Vector2 {60, 1180}, 50, 1, RAYWHITE); 
+		DrawTextEx(d->font, "--Running--", Vector2 {30, 590}, 30, 1, RAYWHITE); 
 	else if (d->insert_mode) 
-		DrawTextEx(d->font, "--Input Mode--", Vector2 {60, 1180}, 50, 1, RAYWHITE); 
+		DrawTextEx(d->font, "--Input Mode--", Vector2 {30, 590}, 30, 1, RAYWHITE); 
 
 	EndDrawing(); 
 } 
@@ -209,7 +215,7 @@ void Draw(data_t *d)
 data_t * Init() 
 {
 
-	InitWindow(1960, 1280, "Test");
+	InitWindow(980, 640, "MxTProject");
 	SetTargetFPS(60);
 	InitAudioDevice();
 	SetExitKey(0);

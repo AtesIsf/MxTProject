@@ -1,5 +1,6 @@
 #include <cmath>
 #include <algorithm>
+#include <cstring>
 #include <random>
 #include "def.hpp"
 
@@ -9,9 +10,22 @@ int * ScaleFormula(bool is_maj)
 {
 	// Maj: wwhwwwh
 	// Min: whwwhww
-	if (is_maj)
-		return new int[] {2, 2, 1, 2, 2, 2, 1};
-	return new int[] {2, 1, 2, 2, 1, 2, 2};
+	
+	int *arr = new int[7]; 
+	// Maj
+	int stack[] = {2, 2, 1, 2, 2, 2, 1};
+
+	// int stack[] = {2, 1, 2, 2, 1, 2, 2};
+	if (!is_maj)
+	{
+		stack[1] = 1;
+		stack[2] = 2;
+		stack[4] = 1;
+		stack[6] = 2;
+	}
+
+	memcpy(arr, stack, sizeof(int) * 7);
+	return arr;
 }
 
 float * GetScale(float start, bool is_maj)
@@ -119,9 +133,9 @@ void NoteCharMatchup(data_t *d)
 
 	d->char_freq = scale;
 
-	auto rd = std::random_device {}; 
-	auto rng = std::default_random_engine { rd() };
-	std::random_shuffle(&(d->char_freq[0]), &(d->char_freq[27]));
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(&(d->char_freq[0]), &(d->char_freq[27]), g);
 }
 
 int CharIndex(data_t *d, char c)
@@ -130,17 +144,17 @@ int CharIndex(data_t *d, char c)
 	int index = -1;
 
 	// space
-	if (c == 32)
+	if (c == ' ')
 		index = 26;
 
 	// full stop
-	else if (c == 46)
+	else if (c == '.')
 		index = 27;
 	
-	if (c >= 97 && c <= 122)
+	if (c >= (char)97 && c <= (char)122)
 		index = c-97;
 	
-	if (c >= 65 && c <= 90)
+	if (c >= (char)65 && c <= (char)90)
 		index = c-65;
 	
 	return index;

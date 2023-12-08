@@ -1,7 +1,7 @@
 #ifndef SOUND_DEF_HPP
 #define SOUND_DEF_HPP 
 
-#include "rl/raylib.h" 
+#include <raylib.h>
 
 #define MAX_BUF_LEN 85
 
