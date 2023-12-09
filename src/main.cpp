@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <raylib.h>
-#include <string>
-#include <filesystem>
 #include "include/def.hpp"
 
 #define MAX_SAMPLES 512
