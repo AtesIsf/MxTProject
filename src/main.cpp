@@ -1,6 +1,10 @@
+#include <cstdlib>
+#include <cstring>
 #include <stdio.h>
 #include <math.h>
 #include <raylib.h>
+#include <string>
+#include <filesystem>
 #include "include/def.hpp"
 
 #define MAX_SAMPLES 512
@@ -236,7 +240,10 @@ data_t * Init()
     PlayAudioStream(stream);        // Start processing stream buffer (no data loaded currently)
 
 	data_t *d = new data_t;
-	d->font = LoadFontEx("Assets/SpaceMono-Regular.ttf", 128, 0, 250);
+	
+	char path[200];
+	std::strcpy(path, std::getenv("HOME"));
+	d->font = LoadFontEx(std::strcat(path, "/.MxTProject/SpaceMono-Regular.ttf"), 128, 0, 250);
 	d->char_freq = new float[28];
 
 	return d;
