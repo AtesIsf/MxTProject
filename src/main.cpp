@@ -120,7 +120,12 @@ void RunUpdate(data_t *d)
 	static int frame_counter = 0;
 	static int n_ticks = 0;
 	
-	frequency = d->char_freq[CharIndex(d, d->inp_buf[n_ticks])];
+	int ind = CharIndex(d, d->inp_buf[n_ticks]);
+	if (ind != -1)
+		frequency = d->char_freq[ind];
+	else
+		frequency = 0.0f;
+
 	if (frequency != oldFrequency)
 	{
 		printf("%.2f\n", frequency);
